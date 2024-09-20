@@ -1,6 +1,6 @@
 import React, { useEffect, useState} from 'react';
 import './App.css';
-import { Button, Popover, Input } from 'antd';
+import { Button, Popover, Input, message } from 'antd';
 import { PlusOutlined, PrinterTwoTone, DownloadOutlined, FileExcelTwoTone } from '@ant-design/icons';
 import DataTable from './Components/Datatable';
 import { Popup } from './Components/PopUp';
@@ -72,12 +72,14 @@ export const App = () => {
       ]),
     });
     doc.save('current_view.pdf');
+    message.success("pdf file downloded successfully");
     setVisible(false);
   };
   // Export Selected Records to PDF
   const handleOption2 = () => {
     if (selectedRows.length === 0) {
       console.log('No rows selected');
+      message.error("No rows selected");
       return;
     }
     const doc = new jsPDF();
@@ -94,6 +96,7 @@ export const App = () => {
       ]),
     });
     doc.save('selected_records.pdf');
+    message.success("pdf file downloded successfully");
     setVisible(false);
   };
 
@@ -103,19 +106,20 @@ export const App = () => {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet);
     XLSX.writeFile(workbook, 'CurrentView.xlsx');
+    message.success("excel file downloded successfully");
   };
-
   // Export Selected Records to Excel
   const handleOption4 = () => {
     if (selectedRows.length === 0) {
       console.log('No rows selected');
-      alert('Select at least one row');
+      message.error("No rows selected");
       return;
     }
     const worksheet = XLSX.utils.json_to_sheet(selectedRows);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet);
     XLSX.writeFile(workbook, 'SelectedRecord.xlsx');
+    message.success("excel file downloded successfully");
   };
 
   // Export Current View to PDF and Print
@@ -136,6 +140,7 @@ export const App = () => {
     });
     doc.autoPrint(); // Automatically open the print dialog
     window.open(doc.output('bloburl'), '_blank'); // Open the PDF in a new tab
+    message.success("printed  successfully");
     setVisible(false);
   };
 
@@ -143,7 +148,7 @@ export const App = () => {
   const handleOption6 = () => {
     if (selectedRows.length === 0) {
       console.log('No rows selected');
-      alert('Select at least one row');
+      message.error("No rows selected");
       return;
     }
     const doc = new jsPDF();
@@ -162,6 +167,7 @@ export const App = () => {
     });
     doc.autoPrint(); // Automatically open the print dialog
     window.open(doc.output('bloburl'), '_blank'); // Open the PDF in a new tab
+    message.success("printed  successfully");
     setVisible(false);
   };
 
