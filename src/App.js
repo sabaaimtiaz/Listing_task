@@ -1,6 +1,7 @@
 import React, { useEffect, useState} from 'react';
 import './App.css';
-import { Button, Popover, Input, message } from 'antd';
+import AddForm from './Components/addForm';        
+import { Button, Popover, Input, message,Modal } from 'antd';
 import { PlusOutlined, PrinterTwoTone, DownloadOutlined, FileExcelTwoTone } from '@ant-design/icons';
 import DataTable from './Components/Datatable';
 import { Popup } from './Components/PopUp';
@@ -11,7 +12,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import * as XLSX from 'xlsx';
-
 const { Search } = Input;
 
 export const App = () => {
@@ -24,7 +24,7 @@ export const App = () => {
   const [visible1, setVisible1] = useState(false);
   const [visible2, setVisible2] = useState(false);
   const [search, setSearch] = useState('');
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const data = useSelector((state) => state);
   useEffect(() => {
@@ -51,7 +51,6 @@ export const App = () => {
   const handleVisibleChange1 = (newVisible) => {
     setVisible1(newVisible);
   };
-
   const handleVisibleChange2 = (newVisible) => {
     setVisible2(newVisible);
   };
@@ -80,6 +79,7 @@ export const App = () => {
     if (selectedRows.length === 0) {
       console.log('No rows selected');
       message.error("No rows selected");
+      // message.error("please select atleast one row");    
       return;
     }
     const doc = new jsPDF();
@@ -114,7 +114,7 @@ export const App = () => {
       console.log('No rows selected');
       message.error("No rows selected");
       return;
-    }
+    }    
     const worksheet = XLSX.utils.json_to_sheet(selectedRows);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet);
@@ -139,7 +139,7 @@ export const App = () => {
       ]),
     });
     doc.autoPrint(); // Automatically open the print dialog
-    window.open(doc.output('bloburl'), '_blank'); // Open the PDF in a new tab
+    window.open(doc.output('bloburl'), '_blank'); // Open the PDF in a new tab and generates a URL that can be used to access the PDF document.
     message.success("printed  successfully");
     setVisible(false);
   };
@@ -171,6 +171,7 @@ export const App = () => {
     setVisible(false);
   };
 
+
   function onChange(pagination) {
     console.log("pagination",pagination);
     let skip = pagination.pageSize * (pagination.current - 1);
@@ -183,51 +184,83 @@ export const App = () => {
   //  function onSearch(value){
   //   console.log("button clicked");
   //   console.log("Current search state:", search);
-  //  }
-
+  //  } 
   // Function to handle the search button click
   const onSearch = (value) => {
+    if (value.length === 0) {
+      console.log('No rows selected');
+      // message.warning(" Please type something to search");
+       // If no search value, fetch the full list again
+    let skip = 0;
+    let numberPerPage = 10;
+    let data = { search: '', numberPerPage, skip };
+    dispatch(fetchListing(data)); // Reset to original list
+    
+    }  else{
     console.log("Search button clicked with value:", value);
     console.log("Current search state:", search);
     let skip =0;
     let numberPerPage=10;
     let data = { search: value, numberPerPage, skip };
-    dispatch(fetchListing(data));
+    dispatch(fetchListing(data)); } 
   };
-
    // Function to handle the input change
   const handleChange = (e) => {
+    const value = e.target.value;
     setSearch(e.target.value); // Update the state with the input value
     console.log("something typed");
-  };
 
+    if (value === '') {
+      let skip = 0;
+      let numberPerPage = 10;
+      let data = { search: '', numberPerPage, skip };
+      dispatch(fetchListing(data)); // Dispatch action to fetch the full list again
+    }
+  };
 
   const handleRowSelection = (selectedRowKeys, selectedRows) => {
     setSelectedRows(selectedRows);
+  };
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false); // Close the modal
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false); // Close the modal
   };
   return (
     <div className='Container'>
       <div>
         <div className='Buttons'>
           <Button className='btn'>Dashboard</Button>
-          <Button className='btn'>Prospective Candidates</Button>
+          <Button className='btn2'>Prospective Candidates</Button>
         </div>
 
         <div className='search'>
           <Search
             placeholder="Input search text"
             allowClear
-             enterButton="Search"
+            enterButton="Search"
              size="large"
-            style={{ width: 250, marginTop: '1.9rem' }}
+            style={{ width: 250, marginTop: '1.8rem' }}
             onSearch={onSearch}  //Track the search button 
             onChange={handleChange}  // Track user input
             value={search}           // Bind state to input value
-
           />
-          <Button className='btn1' type="primary" icon={<PlusOutlined />}>
-            Add
-          </Button>
+          <Button className='btn1' type="primary" icon={<PlusOutlined />} onClick={showModal}>Add</Button>
+          <Modal
+        title="Add New Record"
+        visible={isModalOpen}
+        footer={null} 
+        onCancel={handleCancel}
+      >
+        <AddForm handleOk={handleOk} handleCancel={handleCancel} />
+      </Modal>
         </div>
         <div>
           <div className='Lheader'>
@@ -277,5 +310,4 @@ export const App = () => {
     </div>
   );
 };
-
 export default App;

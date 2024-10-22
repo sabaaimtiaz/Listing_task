@@ -1,10 +1,10 @@
-.Container{
+/* .Container{
     background-color: white;
     border-radius: 2rem;
     margin: 2rem;
     height: 63rem;
   
-  }
+  } */
 
 .Buttons{
     justify-content: left;
@@ -14,7 +14,15 @@
 .btn{
     background-color: #e8e8e7;
     border-radius: 2rem;
-    width: 15%;
+    /* width: 15%; */
+    height: 3rem;
+    margin: 1.5rem;
+}
+
+.btn2{
+    background-color: #e8e8e7;
+    border-radius: 2rem;
+    /* width: 20%; */
     height: 3rem;
     margin: 1.5rem;
 }
@@ -32,7 +40,7 @@
 .btn1{
   
     border-radius: 2rem;
-    width: 15%;
+    /* width: 15%; */
     height: 3rem;
     margin: 1.5rem;
 }
@@ -48,5 +56,17 @@
     color:#1677FF;
 }
 
+/* @media screen and (max-width:425px) {
+    .btn2{
+        background-color: #e8e8e7;
+        border-radius: 2rem;
+        width: 25%;
+        height: 3rem;
+        margin: 1.5rem;
+    }
+} */
 
+
+
+ 
 

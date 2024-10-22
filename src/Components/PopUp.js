@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'antd';
-import jsPDF from 'jspdf';
+// import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
  export  function Popup ({ onOption1, onOption2 }) {
@@ -13,7 +13,6 @@ import 'jspdf-autotable';
     </div>
   );
 };
-
 export  function Popup1 ({ onOption3, onOption4 }) {
   return (
     <div>
@@ -24,8 +23,6 @@ export  function Popup1 ({ onOption3, onOption4 }) {
     </div>
   );
 };
-
-
 export  function Popup2 ({ onOption5, onOption6 }) {
   return (
     <div>

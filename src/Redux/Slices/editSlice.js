@@ -9,33 +9,34 @@ const headers = {
       authorization: `Bearer ${token}`
     }, 
   };
-
 //Action
-export const fetchListing= createAsyncThunk("fetchListing",async (data)=>{
-    const response = await fetch(`${config.apiUrl}/api/candidates/list?search=${data.search}&numberPerPage=${data.numberPerPage}&skip=${data.skip}&agency_type=2&category=`,headers);
+export const fetchEditCandidate= createAsyncThunk("fetchEditCandidate",async (id)=>{
+    const response = await fetch(`${config.apiUrl}/api/candidates/view/${id}`,headers);
     return response.json();
 })
- export const listingSlice = createSlice({
-  name: 'listing',
+ export const editCandidateSlice = createSlice({
+  name: 'editCandidate',
   initialState: {
-    data: [],
-    name: '',
-    status: 'idle',
-  },
+    editData: null,
+    isLoading: false, 
+    error: null,               
+},    
   reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(fetchListing.pending, (state) => {
-        state.status = 'loading';
+    builder     
+      .addCase(fetchEditCandidate.pending, (state,action) => {
+        state.isLoading = true;
       })
-      .addCase(fetchListing.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.data = action.payload; 
+      .addCase(fetchEditCandidate.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.status = false; 
+        state.editData = action.payload;
         console.log("action",action) 
       })
-      .addCase(fetchListing.rejected, (state) => {
-        state.status = 'failed';
-      });
+      .addCase(fetchEditCandidate.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+    });
   },
 });
 
